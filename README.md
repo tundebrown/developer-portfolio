@@ -8,11 +8,7 @@ This is my full-stack developer portfolio. It is a collection of projects that d
 
 A full-stack app to track and manage applications for a startup. Delivered a production-ready API for managing user applications, CV processing with OpenAI API, AI image processing, and role-based access control. Deployed and hosted on Vercel.
 
-### 2. Bodega Market
-
-Front-end engineer on a decentralised prediction market built on Cardano. Built the full trading UI including market creation, position management, and settlement flows. Integrated on-chain data with a clean, responsive interface optimised for both desktop and mobile traders.
-
-### 3. Personal Website
+### 2. Personal Website
 
 A full-stack website built with Next.js, TailwindCSS, and MongoDB. Features a blog, contact form, and a portfolio section.
 
