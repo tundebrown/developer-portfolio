@@ -1,71 +1,64 @@
 // @flow strict
-
 import { skillsData } from "@/utils/data/skills";
 import { skillsImage } from "@/utils/skill-image";
 import Image from "next/image";
 import Marquee from "react-fast-marquee";
+import { SectionHeading, SectionWrapper } from "../../helper/motion";
 
 function Skills() {
   return (
-    <div id="skills" className="relative z-50 border-t my-12 lg:my-24 border-[#25213b]">
-      <div className="w-[100px] h-[100px] bg-violet-100 rounded-full absolute top-6 left-[42%] translate-x-1/2 filter blur-3xl  opacity-20"></div>
+    <div id="skills" className="relative z-50 border-t border-indigo-500/10 my-12 lg:my-24">
+      <div className="pointer-events-none absolute top-6 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full bg-indigo-500/8 blur-3xl" />
 
-      <div className="flex justify-center -translate-y-[1px]">
-        <div className="w-3/4">
-          <div className="h-[1px] bg-gradient-to-r from-transparent via-violet-500 to-transparent  w-full" />
-        </div>
+      <div className="flex justify-center -translate-y-px">
+        <div className="w-3/4 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
       </div>
 
-      <div className="flex justify-center my-5 lg:py-8">
-        <div className="flex  items-center">
-          <span className="w-24 h-[2px] bg-[#1a1443]"></span>
-          <span className="bg-[#1a1443] w-fit text-white p-2 px-5 text-xl rounded-md">
-            Skills
-          </span>
-          <span className="w-24 h-[2px] bg-[#1a1443]"></span>
-        </div>
-      </div>
+      <SectionHeading eyebrow="What I work with" title="Skills" className="my-8 lg:py-10" />
 
-      <div className="w-full my-12">
-        <Marquee
-          gradient={false}
-          speed={80}
-          pauseOnHover={true}
-          pauseOnClick={true}
-          delay={0}
-          play={true}
-          direction="left"
-        >
-          {skillsData.map((skill, id) => (
-            <div className="w-36 min-w-fit h-fit flex flex-col items-center justify-center transition-all duration-500 m-3 sm:m-5 rounded-lg group relative hover:scale-[1.15] cursor-pointer"
-              key={id}>
-              <div className="h-full w-full rounded-lg border border-[#1f223c] bg-[#11152c] shadow-none shadow-gray-50 group-hover:border-violet-500 transition-all duration-500">
-                <div className="flex -translate-y-[1px] justify-center">
-                  <div className="w-3/4">
-                    <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
-                  </div>
-                </div>
-                <div className="flex flex-col items-center justify-center gap-3 p-6">
-                  <div className="h-8 sm:h-10">
-                    <Image
-                      src={skillsImage(skill)?.src}
-                      alt={skill}
-                      width={40}
-                      height={40}
-                      className="h-full w-auto rounded-lg"
-                    />
-                  </div>
-                  <p className="text-white text-sm sm:text-lg">
-                    {skill}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
+      <SectionWrapper className="w-full flex flex-col gap-5 my-10">
+        <Marquee gradient={false} speed={50} pauseOnHover pauseOnClick direction="left">
+          {skillsData.map((skill, id) => <SkillPill key={id} skill={skill} />)}
         </Marquee>
+        <Marquee gradient={false} speed={40} pauseOnHover pauseOnClick direction="right">
+          {[...skillsData].reverse().map((skill, id) => <SkillPill key={id} skill={skill} />)}
+        </Marquee>
+      </SectionWrapper>
+    </div>
+  );
+}
+
+function SkillPill({ skill }) {
+  return (
+    <div className="mx-3 group relative flex flex-col items-center justify-center w-28 sm:w-32 cursor-pointer">
+      <div className="relative w-full rounded-2xl overflow-hidden
+        bg-white/[0.025] border border-indigo-500/15
+        group-hover:border-indigo-500/40
+        group-hover:bg-indigo-500/6
+        group-hover:shadow-[0_0_22px_rgba(99,102,241,0.15)]
+        group-hover:-translate-y-1
+        transition-all duration-300">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="flex flex-col items-center justify-center gap-3 p-5">
+          <div className="h-9 w-9 flex items-center justify-center
+            rounded-xl bg-white/4 border border-indigo-500/15
+            group-hover:border-indigo-400/30 group-hover:bg-indigo-500/8
+            transition-all duration-300">
+            <Image
+              src={skillsImage(skill)?.src}
+              alt={skill}
+              width={24}
+              height={24}
+              className="h-6 w-auto object-contain"
+            />
+          </div>
+          <p className="text-white/50 text-[0.7rem] font-semibold tracking-wide text-center group-hover:text-white transition-colors duration-300">
+            {skill}
+          </p>
+        </div>
       </div>
     </div>
   );
-};
+}
 
 export default Skills;

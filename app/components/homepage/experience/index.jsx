@@ -1,82 +1,67 @@
 // @flow strict
-
 import { experiences } from "@/utils/data/experience";
-import Image from "next/image";
 import { BsPersonWorkspace } from "react-icons/bs";
 import experience from '../../../assets/lottie/code.json';
 import AnimationLottie from "../../helper/animation-lottie";
 import GlowCard from "../../helper/glow-card";
+import { FadeLeft, FadeRight, SectionHeading, StaggerContainer, StaggerItem } from "../../helper/motion";
 
 function Experience() {
   return (
-    <div id="experience" className="relative z-50 border-t my-12 lg:my-24 border-[#25213b]">
-      <Image
-        src="/section.svg"
-        alt="Hero"
-        width={1572}
-        height={795}
-        className="absolute top-0 -z-10"
-      />
+    <div id="experience" className="relative z-50 border-t border-indigo-500/10 my-12 lg:my-24">
 
-      <div className="flex justify-center my-5 lg:py-8">
-        <div className="flex  items-center">
-          <span className="w-24 h-[2px] bg-[#1a1443]"></span>
-          <span className="bg-[#1a1443] w-fit text-white p-2 px-5 text-xl rounded-md">
-            Experiences
-          </span>
-          <span className="w-24 h-[2px] bg-[#1a1443]"></span>
-        </div>
-      </div>
+      <SectionHeading eyebrow="What I've done" title="Experience" className="my-8 lg:py-10" />
 
-      <div className="py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
-          <div className="flex justify-center items-start">
-            <div className="w-full h-full">
+      <div className="py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+
+          <FadeLeft className="flex justify-center items-center">
+            <div className="w-full max-w-sm">
               <AnimationLottie animationPath={experience} />
             </div>
-          </div>
+          </FadeLeft>
 
-          <div>
-            <div className="flex flex-col gap-6">
-              {
-                experiences.map(experience => (
-                  <GlowCard key={experience.id} identifier={`experience-${experience.id}`}>
-                    <div className="p-3 relative">
-                      <Image
-                        src="/blur-23.svg"
-                        alt="Hero"
-                        width={1080}
-                        height={200}
-                        className="absolute bottom-0 opacity-80"
-                      />
-                      <div className="flex justify-center">
-                        <p className="text-xs sm:text-sm text-[#16f2b3]">
-                          {experience.duration}
+          <StaggerContainer className="flex flex-col gap-4">
+            {experiences.map((exp) => (
+              <StaggerItem key={exp.id}>
+                <GlowCard identifier={`experience-${exp.id}`}>
+                  <div className="p-4 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent" />
+                    <div className="flex justify-center mb-3">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                        bg-indigo-500/7 border border-indigo-500/18
+                        text-[0.65rem] font-semibold tracking-widest uppercase text-indigo-400">
+                        <span className="w-1 h-1 rounded-full bg-indigo-400" />
+                        {exp.duration}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-5 px-2 py-3">
+                      <div className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center
+                        bg-indigo-500/8 border border-indigo-500/18 text-indigo-400
+                        transition-all duration-300
+                        hover:scale-110 hover:bg-indigo-500/15 hover:shadow-[0_0_18px_rgba(99,102,241,0.25)]">
+                        <BsPersonWorkspace size={20} />
+                      </div>
+                      <div>
+                        <p className="text-sm sm:text-base font-bold uppercase tracking-wide text-slate-100 mb-1">
+                          {exp.title}
+                        </p>
+                        <p className="text-xs sm:text-sm text-white/45 font-medium">
+                          {exp.company}
                         </p>
                       </div>
-                      <div className="flex items-center gap-x-8 px-3 py-5">
-                        <div className="text-violet-500  transition-all duration-300 hover:scale-125">
-                          <BsPersonWorkspace size={36} />
-                        </div>
-                        <div>
-                          <p className="text-base sm:text-xl mb-2 font-medium uppercase">
-                            {experience.title}
-                          </p>
-                          <p className="text-sm sm:text-base">
-                            {experience.company}
-                          </p>
-                        </div>
-                      </div>
                     </div>
-                  </GlowCard>
-                ))
-              }
-            </div>
-          </div>
+                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-indigo-500/12 rounded-br-xl pointer-events-none" />
+                  </div>
+                </GlowCard>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default Experience;
