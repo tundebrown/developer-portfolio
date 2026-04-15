@@ -1,5 +1,5 @@
 {
-  "name": "developer-portfolio",
+  "name": "web-developer-portfolio",
   "description": "Portfolio of Tunde Olupitan.",
   "version": "0.1.0",
   "private": true,
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.16",
     "autoprefixer": "latest",
+    "baseline-browser-mapping": "^2.10.19",
     "eslint": "latest",
     "eslint-config-next": "^16.0.1",
     "postcss": "latest",
