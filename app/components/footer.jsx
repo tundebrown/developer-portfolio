@@ -21,10 +21,10 @@ function Footer() {
             </Link>
           </p>
 
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <Link
               target="_blank"
-              href="https://github.com/said7388/developer-portfolio"
+              href="https://github.com/tundebrown/developer-portfolio"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg
                 text-[0.65rem] font-bold tracking-widest uppercase
                 text-white/45 bg-white/3 border border-indigo-500/18
@@ -38,7 +38,7 @@ function Footer() {
 
             <Link
               target="_blank"
-              href="https://github.com/said7388/developer-portfolio/fork"
+              href="https://github.com/tundebrown/developer-portfolio/fork"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg
                 text-[0.65rem] font-bold tracking-widest uppercase
                 text-white/45 bg-white/3 border border-indigo-500/18
@@ -47,12 +47,12 @@ function Footer() {
             >
               <CgGitFork size={11} /> Fork
             </Link>
-          </div>
+          </div> */}
         </div>
 
-        <p className="text-center text-[0.6rem] text-white/20 tracking-wider mt-3">
-          Powered by Next.js · Deployed with Vercel · Designed in the dark
-        </p>
+        {/* <p className="text-center text-[0.6rem] text-white/20 tracking-wider mt-3">
+          Powered by Next.js · Deployed with Netlify
+        </p> */}
       </div>
     </footer>
   );
