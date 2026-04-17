@@ -10,7 +10,7 @@ const page = () => {
 
       <SectionHeading eyebrow="What I've built" title="Projects" className="mb-10" />
 
-      <StaggerContainer className="flex flex-col gap-8">
+      <StaggerContainer className="flex flex-col gap-12">
         {projectsData.map((project) => (
           <StaggerItem key={project.id}>
             <ProjectCard project={project} />
