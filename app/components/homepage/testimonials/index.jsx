@@ -7,7 +7,7 @@ import { SectionHeading, StaggerContainer, StaggerItem } from "../../helper/moti
 
 function Testimonials() {
   return (
-    <div id="testimonials" className="relative z-50 border-t border-indigo-500/10 my-12 lg:my-24">
+    <div id="testimonials" className="relative border-t border-indigo-500/10 my-12 lg:my-24">
       <div className="flex justify-center -translate-y-px">
         <div className="w-3/4 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
       </div>

@@ -6,7 +6,7 @@ import { SectionHeading, SectionWrapper, StaggerContainer, StaggerItem } from '.
 
 function Blog({ blogs }) {
   return (
-    <div id="blogs" className="relative z-50 border-t border-indigo-500/10 my-12 lg:my-24">
+    <div id="blogs" className="relative border-t border-indigo-500/10 my-12 lg:my-24">
       <div className="pointer-events-none absolute top-6 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full bg-indigo-500/8 blur-3xl" />
 
       <div className="flex justify-center -translate-y-px">
@@ -32,7 +32,7 @@ function Blog({ blogs }) {
             bg-indigo-600 hover:bg-indigo-500
             hover:shadow-[0_8px_24px_rgba(79,70,229,0.35)]
             hover:-translate-y-px transition-all duration-250">
-          <span>View More</span>
+          <span>View More Blogs</span>
           <FaArrowRight size={12} />
         </Link>
       </SectionWrapper>

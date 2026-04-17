@@ -7,7 +7,7 @@ import { SectionHeading, SectionWrapper } from "../../helper/motion";
 
 function Skills() {
   return (
-    <div id="skills" className="relative z-50 border-t border-indigo-500/10 my-12 lg:my-24">
+    <div id="skills" className="relative border-t border-indigo-500/10 my-12 lg:my-24">
       <div className="pointer-events-none absolute top-6 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full bg-indigo-500/8 blur-3xl" />
 
       <div className="flex justify-center -translate-y-px">

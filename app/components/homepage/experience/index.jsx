@@ -8,7 +8,7 @@ import { FadeLeft, FadeRight, SectionHeading, StaggerContainer, StaggerItem } fr
 
 function Experience() {
   return (
-    <div id="experience" className="relative z-50 border-t border-indigo-500/10 my-12 lg:my-24">
+    <div id="experience" className="relative border-t border-indigo-500/10 my-12 lg:my-24">
 
       <SectionHeading eyebrow="What I've done" title="Experience" className="my-8 lg:py-10" />
 

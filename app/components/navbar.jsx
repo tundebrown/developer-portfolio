@@ -2,6 +2,7 @@
 // @flow strict
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 
 const navItems = [
@@ -19,6 +20,11 @@ function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const isHome = pathname === "/";
+
   // track scroll for shadow
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -28,6 +34,9 @@ function Navbar() {
 
   // highlight active section via IntersectionObserver
   useEffect(() => {
+    // Only run observer if we're on the home page
+    if (!isHome) return;
+
     const sectionIds = navItems
       .filter((n) => n.href.startsWith("#"))
       .map((n) => n.href.slice(1));
@@ -46,13 +55,24 @@ function Navbar() {
     });
 
     return () => observers.forEach((o) => o?.disconnect());
-  }, []);
+  }, [isHome]);
 
   // smooth scroll handler
-  const handleNavClick = (e, href) => {
+  const handleNavClick = async (e, href) => {
     if (!href.startsWith("#")) return; // let Next.js handle /blog etc.
     e.preventDefault();
+
     const id = href.slice(1);
+
+    // If we're not on home page, navigate to home first, then scroll
+    if (!isHome) {
+      setMobileOpen(false);
+      // Navigate to home page with the hash
+      router.push(`/${href}`);
+      return;
+    }
+
+    // We're on home page, scroll to the section
     const el = document.getElementById(id);
     if (!el) return;
     setActive(id);
@@ -60,18 +80,27 @@ function Navbar() {
     el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  // Handle initial scroll after navigation to home page with hash
+  useEffect(() => {
+    if (isHome && window.location.hash) {
+      const id = window.location.hash.slice(1);
+      const el = document.getElementById(id);
+      if (el) {
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          setActive(id);
+        }, 100);
+      }
+    }
+  }, [isHome]);
+
   return (
     <>
       <nav
-        className={`sticky top-0 z-999 backdrop-blur-xl bg-[#060818]/70 border-b border-indigo-500/12 transition-shadow duration-300 ${
+        className={`sticky top-0 z-9999 backdrop-blur-xl bg-[#060818]/70 border-b border-indigo-500/12 transition-shadow duration-300 ${
           scrolled ? "shadow-[0_4px_30px_rgba(99,102,241,0.08)]" : ""
-        }`}
-        style={{
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
-          maskImage:
-            "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
-        }}
+        } [mask-image:linear-gradient(to_right,transparent,black_0%,black_100%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_0%,black_100%,transparent)] md:[mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] md:[-webkit-mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]`}
       >
         {/* Bottom gradient hairline */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
@@ -80,7 +109,6 @@ function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            onClick={(e) => handleNavClick(e, "#")}
             className="flex items-center gap-2 text-sm font-bold tracking-widest uppercase text-indigo-400 hover:text-indigo-300 transition-colors duration-200"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_8px_#818cf8]" />
@@ -91,11 +119,11 @@ function Navbar() {
           <ul className="hidden md:flex items-center gap-1">
             {navItems.map(({ label, href }) => {
               const id = href.startsWith("#") ? href.slice(1) : null;
-              const isActive = id && active === id;
+              const isActive = id && active === id && isHome;
               return (
                 <li key={label}>
                   <a
-                    href={href}
+                    href={isHome ? href : `/${href}`}
                     onClick={(e) => handleNavClick(e, href)}
                     className={`relative px-4 py-2 text-[0.7rem] font-semibold tracking-widest uppercase rounded-md
                       transition-all duration-200 cursor-pointer block
@@ -161,7 +189,7 @@ function Navbar() {
           <ul className="flex flex-col px-6 py-4 gap-1">
             {navItems.map(({ label, href }, i) => {
               const id = href.startsWith("#") ? href.slice(1) : null;
-              const isActive = id && active === id;
+              const isActive = id && active === id && isHome;
               return (
                 <li
                   key={label}

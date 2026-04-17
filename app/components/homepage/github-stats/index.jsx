@@ -237,7 +237,7 @@ export default function GitHubStats() {
   return (
     <div
       id="github-stats"
-      className="relative z-50 border-t border-indigo-500/10 my-12 lg:my-24"
+      className="relative border-t border-indigo-500/10 my-12 lg:my-24"
     >
       <SectionHeading
         eyebrow="Activity"
