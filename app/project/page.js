@@ -1,23 +1,25 @@
-import { projectsData } from '@/utils/data/projects-data';
+import { projectTracks, projectsData } from '@/utils/data/projects-data';
+import { withBlur } from '@/utils/project-images';
+import { SectionHeading } from '../components/helper/motion';
+import ProjectsShowcase from '../components/homepage/projects/projects-showcase';
 
-
-import { SectionHeading, StaggerContainer, StaggerItem } from '../components/helper/motion';
-import ProjectCard from '../components/homepage/projects/project-card';
+export const metadata = {
+  title: 'Projects · Tunde Olupitan',
+  description: 'DeFi protocols, marketplaces, APIs and mobile apps built by Tunde Olupitan, Full-Stack Engineer.',
+};
 
 const page = () => {
   return (
-    <div id="projects" className="relative z-50 my-12 lg:my-24">
-
-      <SectionHeading eyebrow="What I've built" title="Projects" className="mb-10" />
-
-      <StaggerContainer className="flex flex-col gap-12">
-        {projectsData.map((project) => (
-          <StaggerItem key={project.id}>
-            <ProjectCard project={project} />
-          </StaggerItem>
-        ))}
-      </StaggerContainer>
-    </div>
+    <section aria-labelledby="all-projects" className="relative py-12 lg:py-20">
+      <SectionHeading
+        as="h1"
+        eyebrow="Everything I've shipped"
+        title={<span id="all-projects">All projects</span>}
+        description="Each entry says what my role was. Team projects describe my part only."
+        className="mb-10"
+      />
+      <ProjectsShowcase projects={withBlur(projectsData)} tracks={projectTracks} />
+    </section>
   );
 };
 

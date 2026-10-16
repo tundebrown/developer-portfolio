@@ -1,93 +1,66 @@
-// blog-card.jsx
-// @flow strict
 import { timeConverter } from '@/utils/time-converter';
 import Image from 'next/image';
-import Link from 'next/link';
 import { BsHeartFill } from 'react-icons/bs';
 import { FaArrowRight, FaCommentAlt } from 'react-icons/fa';
 
 function BlogCard({ blog }) {
   return (
-    <div className="group relative flex flex-col rounded-2xl overflow-hidden
-      bg-white/[0.025] border border-indigo-500/15
-      hover:border-indigo-500/35
-      hover:shadow-[0_0_40px_rgba(99,102,241,0.1)]
-      hover:-translate-y-1
-      transition-all duration-300"
-    >
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/35 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-      <div className="h-44 lg:h-48 w-full overflow-hidden relative shrink-0">
+    <article className="surface-card group relative flex h-full flex-col overflow-hidden transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-line-strong">
+      <div className="relative h-44 w-full shrink-0 overflow-hidden border-b border-line lg:h-48">
         <Image
           src={blog?.cover_image}
-          height={1080}
-          width={1920}
-          alt={blog.title}
-          className="h-full w-full object-cover group-hover:scale-105 transition-all duration-500"
+          fill
+          sizes="(min-width: 768px) 33vw, 100vw"
+          alt=""
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#060818]/80 via-transparent to-transparent" />
-        <div className="absolute bottom-3 left-3 flex items-center gap-1.5
-          px-2.5 py-1 rounded-full
-          bg-[#060818]/70 border border-indigo-500/20 backdrop-blur-sm
-          text-[0.6rem] font-semibold tracking-widest uppercase text-indigo-300/70"
-        >
-          <span className="w-1 h-1 rounded-full bg-indigo-400" />
+        <span className="glass absolute bottom-3 left-3 rounded-full px-2.5 py-1 text-xs font-medium text-fg">
           {blog.reading_time_minutes} min read
-        </div>
+        </span>
       </div>
 
-      <div className="flex flex-col flex-1 p-4 lg:p-5">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-[0.65rem] text-white/30 tracking-wide">
-            {timeConverter(blog.published_at)}
-          </span>
+      <div className="flex flex-1 flex-col p-5">
+        <div className="mb-3 flex items-center justify-between text-xs text-fg-subtle">
+          <time dateTime={blog.published_at}>{timeConverter(blog.published_at)}</time>
           <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1 text-[0.65rem] text-white/35">
-              <BsHeartFill size={8} className="text-indigo-400" />
+            <span className="flex items-center gap-1">
+              <BsHeartFill size={9} className="text-accent" aria-hidden="true" />
+              <span className="sr-only">Reactions:</span>
               {blog.public_reactions_count}
             </span>
             {blog.comments_count > 0 && (
-              <span className="flex items-center gap-1 text-[0.65rem] text-white/35">
-                <FaCommentAlt size={8} className="text-indigo-400/70" />
+              <span className="flex items-center gap-1">
+                <FaCommentAlt size={9} className="text-accent" aria-hidden="true" />
+                <span className="sr-only">Comments:</span>
                 {blog.comments_count}
               </span>
             )}
           </div>
         </div>
 
-        <Link target="_blank" href={blog.url}>
-          <h3 className="text-sm lg:text-base font-bold text-slate-100 leading-snug mb-2
-            hover:text-indigo-300 transition-colors duration-200 line-clamp-2">
+        <h3 className="mb-2 line-clamp-2 text-base font-bold leading-snug text-fg">
+          {/* Stretched link makes the whole card clickable with one tab stop. */}
+          <a target="_blank" rel="noopener noreferrer" href={blog.url} className="after:absolute after:inset-0 hover:text-accent-text">
             {blog.title}
-          </h3>
-        </Link>
+          </a>
+        </h3>
 
-        <p className="text-xs lg:text-sm text-white/40 leading-relaxed line-clamp-3 flex-1">
-          {blog.description}
-        </p>
+        <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-fg-muted">{blog.description}</p>
 
-        <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
+        <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
           {blog.tag_list?.length > 0 && (
-            <div className="flex gap-1.5 flex-wrap">
-              {blog.tag_list.slice(0, 2).map((tag, i) => (
-                <span key={i} className="px-2 py-0.5 rounded-full
-                  text-[0.55rem] font-bold tracking-widest uppercase
-                  bg-indigo-500/7 border border-indigo-500/18 text-indigo-300/55">
-                  #{tag}
-                </span>
+            <ul className="flex flex-wrap gap-1.5">
+              {blog.tag_list.slice(0, 2).map((tag) => (
+                <li key={tag} className="chip">#{tag}</li>
               ))}
-            </div>
+            </ul>
           )}
-          <Link target="_blank" href={blog.url}
-            className="ml-auto flex items-center gap-1 text-[0.65rem] font-bold tracking-widest uppercase
-              text-indigo-400/50 hover:text-indigo-300 transition-colors duration-200">
-            Read <FaArrowRight size={8} />
-          </Link>
+          <span className="ml-auto flex items-center gap-1 text-xs font-semibold text-accent-text" aria-hidden="true">
+            Read <FaArrowRight size={9} />
+          </span>
         </div>
       </div>
-
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-indigo-500/12 rounded-br-2xl pointer-events-none" />
-    </div>
+    </article>
   );
 }
 

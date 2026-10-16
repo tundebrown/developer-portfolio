@@ -10,21 +10,25 @@ import Skills from "./components/homepage/skills";
 import Testimonials from "./components/homepage/testimonials";
 import GitHubStats from "./components/homepage/github-stats";
 
-async function getData() {
-  const res = await fetch(
-    `https://dev.to/api/articles?username=${personalData.devUsername}`,
-  );
-  if (!res.ok) throw new Error("Failed to fetch data");
-  const data = await res.json();
-  return data
-    .filter((item) => item?.cover_image)
-    .sort(() => Math.random() - 0.5);
+// A dev.to outage should hide the blog section, not take down the page.
+async function getBlogs() {
+  try {
+    const res = await fetch(
+      `https://dev.to/api/articles?username=${personalData.devUsername}`,
+      { next: { revalidate: 3600 } },
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.filter((item) => item?.cover_image);
+  } catch {
+    return [];
+  }
 }
 
 export default async function Home() {
-  const blogs = await getData();
+  const blogs = await getBlogs();
   return (
-    <div suppressHydrationWarning>
+    <>
       <HeroSection />
       <Projects />
       <AboutSection />
@@ -35,6 +39,6 @@ export default async function Home() {
       <Education />
       <Blog blogs={blogs} />
       <ContactSection />
-    </div>
+    </>
   );
 }

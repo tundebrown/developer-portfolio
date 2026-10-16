@@ -1,4 +1,3 @@
-// @flow strict
 import { testimonialsData } from "@/utils/data/testimonials";
 import Image from "next/image";
 import { FaStar } from "react-icons/fa";
@@ -7,76 +6,60 @@ import { SectionHeading, StaggerContainer, StaggerItem } from "../../helper/moti
 
 function Testimonials() {
   return (
-    <div id="testimonials" className="relative border-t border-indigo-500/10 my-12 lg:my-24">
-      <div className="flex justify-center -translate-y-px">
-        <div className="w-3/4 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
-      </div>
-      <div className="pointer-events-none absolute top-6 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full bg-indigo-500/8 blur-3xl" />
+    <section id="testimonials" aria-labelledby="testimonials-heading" className="relative scroll-mt-24 py-12 lg:py-20">
+      <SectionHeading
+        eyebrow="Kind words"
+        title={<span id="testimonials-heading">Testimonials</span>}
+        className="mb-10"
+      />
 
-      <SectionHeading eyebrow="What people say" title="Testimonials" className="my-8 lg:py-10" />
-
-      <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+      <StaggerContainer className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         {testimonialsData.map((t) => (
-          <StaggerItem key={t.id}>
+          <StaggerItem key={t.id} className="h-full">
             <TestimonialCard testimonial={t} />
           </StaggerItem>
         ))}
       </StaggerContainer>
-    </div>
+    </section>
   );
 }
 
 function TestimonialCard({ testimonial: t }) {
   return (
-    <div className="relative flex flex-col h-full rounded-2xl overflow-hidden
-      bg-white/[0.025] border border-indigo-500/15 backdrop-blur-xl
-      p-6 gap-5
-      hover:border-indigo-500/30 hover:shadow-[0_0_40px_rgba(99,102,241,0.08)]
-      transition-all duration-300">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+    <figure className="surface-card flex h-full flex-col gap-5 p-6">
+      <span className="neu-inset grid h-9 w-9 place-items-center rounded-lg text-accent-text" aria-hidden="true">
+        <RiDoubleQuotesL size={15} />
+      </span>
 
-      <div className="w-8 h-8 rounded-lg flex items-center justify-center
-        bg-indigo-500/10 border border-indigo-500/20 text-indigo-400/60">
-        <RiDoubleQuotesL size={14} />
-      </div>
+      <blockquote className="flex-1 text-[0.92rem] leading-relaxed text-fg-muted">
+        <p>{t.text}</p>
+      </blockquote>
 
-      <p className="text-sm text-white/55 leading-relaxed flex-1 italic">
-        "{t.text}"
-      </p>
-
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1" role="img" aria-label={`Rated ${t.rating} out of 5`}>
         {Array.from({ length: t.rating }).map((_, i) => (
-          <FaStar key={i} size={10} className="text-indigo-400/70" />
+          <FaStar key={i} size={11} className="text-accent" aria-hidden="true" />
         ))}
       </div>
 
-      <div className="flex items-center gap-3 pt-4 border-t border-white/5">
-        <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0
-          bg-indigo-500/15 border border-indigo-500/20
-          flex items-center justify-center">
+      <figcaption className="flex items-center gap-3 border-t border-line pt-4">
+        <div className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full border border-line bg-accent/10">
           {t.image ? (
-            <Image src={t.image} alt={t.name} fill className="object-cover" sizes="40px" />
+            <Image src={t.image} alt="" fill className="object-cover" sizes="40px" />
           ) : (
-            <span className="text-sm font-bold text-indigo-300">
+            <span className="text-sm font-bold text-accent-text" aria-hidden="true">
               {t.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
             </span>
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold text-slate-100 truncate">{t.name}</p>
-          <p className="text-[0.65rem] text-white/40 truncate">
-            {t.role}{t.company ? `, ${t.company}` : ""}
+          <p className="truncate text-sm font-bold text-fg">{t.name}</p>
+          <p className="truncate text-xs text-fg-muted">
+            {t.role}{t.company ? `, ${t.company.trim()}` : ""}
           </p>
         </div>
-        <span className="shrink-0 px-2 py-0.5 rounded-full
-          bg-indigo-500/7 border border-indigo-500/18
-          text-[0.55rem] font-bold tracking-widest uppercase text-indigo-300/55">
-          {t.source}
-        </span>
-      </div>
-
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-indigo-500/12 rounded-br-2xl pointer-events-none" />
-    </div>
+        <span className="chip shrink-0">{t.source}</span>
+      </figcaption>
+    </figure>
   );
 }
 

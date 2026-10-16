@@ -1,13 +1,22 @@
+/* Pointer-tracking conic glow used by GlowCard. Colours follow the theme accent. */
 .glow-container {
   --spread: 60;
 }
 
 .glow-card {
-  --active: 0.15;
+  --active: 0;
   --start: 0;
+  --glow: conic-gradient(
+    from 180deg at 50% 70%,
+    var(--accent) 0deg,
+    var(--accent-text) 120deg,
+    var(--signal) 200deg,
+    var(--accent) 280deg,
+    var(--accent-text) 1turn
+  );
 }
 
-.glow-card:is(:hover, :focus-visible) {
+.glow-card:is(:hover, :focus-within) {
   z-index: 2;
 }
 
@@ -22,20 +31,12 @@
 .glows::before {
   --alpha: 0;
   content: "";
-  background: conic-gradient(
-    from 180deg at 50% 70%,
-    #4338ca 0deg,
-    #6366f1 72deg,
-    #818cf8 144deg,
-    #4338ca 216deg,
-    #6366f1 288deg,
-    #818cf8 1turn
-  );
+  background: var(--glow);
   background-attachment: fixed;
   position: absolute;
   inset: -5px;
   border: 8px solid transparent;
-  border-radius: 12px;
+  border-radius: var(--r-lg);
   mask: linear-gradient(#0000, #0000),
     conic-gradient(
       from calc((var(--start) - (var(--spread) * 0.5)) * 1deg),
@@ -44,18 +45,18 @@
     );
   mask-composite: intersect;
   mask-clip: padding-box, border-box;
-  opacity: var(--active);
+  opacity: calc(var(--active) * 0.6);
   transition: opacity 1s;
 }
 
 .glow-card::before {
   position: absolute;
   inset: 0;
-  border: 2px solid transparent;
+  border: 1.5px solid transparent;
   content: "";
-  border-radius: 12px;
+  border-radius: var(--r-lg);
   pointer-events: none;
-  background: #6366f1;
+  background: var(--accent);
   background-attachment: fixed;
   mask: linear-gradient(#0000, #0000),
     conic-gradient(
@@ -73,28 +74,27 @@
   content: "";
   pointer-events: none;
   position: absolute;
-  background: conic-gradient(
-    from 180deg at 50% 70%,
-    #4338ca 0deg,
-    #6366f1 72deg,
-    #818cf8 144deg,
-    #4338ca 216deg,
-    #6366f1 288deg,
-    #818cf8 1turn
-  );
+  background: var(--glow);
   background-attachment: fixed;
-  border-radius: 12px;
+  border-radius: var(--r-lg);
   opacity: var(--active, 0);
   transition: opacity 1s;
   inset: 0;
-  border: 2px solid transparent;
+  border: 1.5px solid transparent;
   mask: linear-gradient(#0000, #0000),
     conic-gradient(
       from calc(((var(--start) + (var(--spread) * 0.25)) - (var(--spread) * 0.5)) * 1deg),
       #0000 0deg, #fff,
       #0000 calc(var(--spread) * 0.5deg)
     );
-  filter: brightness(1.5);
   mask-clip: padding-box, border-box;
   mask-composite: intersect;
+}
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .glows,
+  .glow-card::before,
+  .glow-card::after {
+    display: none;
+  }
 }

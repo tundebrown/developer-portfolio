@@ -1,66 +1,81 @@
-// @flow strict
 import { experiences } from "@/utils/data/experience";
-import { BsPersonWorkspace } from "react-icons/bs";
-import experience from '../../../assets/lottie/code.json';
+import { projectTracks } from "@/utils/data/projects-data";
+import { HiArrowUpRight } from "react-icons/hi2";
+import experienceAnimation from '../../../assets/lottie/code.json';
 import AnimationLottie from "../../helper/animation-lottie";
 import GlowCard from "../../helper/glow-card";
-import { FadeLeft, FadeRight, SectionHeading, StaggerContainer, StaggerItem } from "../../helper/motion";
+import { SectionHeading, StaggerContainer, StaggerItem } from "../../helper/motion";
+
+const trackLabel = Object.fromEntries(projectTracks.map(({ id, label }) => [id, label]));
 
 function Experience() {
   return (
-    <div id="experience" className="relative border-t border-indigo-500/10 my-12 lg:my-24">
+    <section id="experience" aria-labelledby="experience-heading" className="relative scroll-mt-24 py-12 lg:py-20">
+      <SectionHeading
+        eyebrow="Career"
+        title={<span id="experience-heading">Experience</span>}
+        description="Roles run from newest to oldest. Several overlap, because I've kept freelance work alongside contract and full-time roles."
+        className="mb-10"
+      />
 
-      <SectionHeading eyebrow="What I've done" title="Experience" className="my-8 lg:py-10" />
-
-      <div className="py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-
-          <FadeLeft className="flex justify-center items-center">
-            <div className="w-full max-w-sm">
-              <AnimationLottie animationPath={experience} />
-            </div>
-          </FadeLeft>
-
-          <StaggerContainer className="flex flex-col gap-4">
-            {experiences.map((exp) => (
-              <StaggerItem key={exp.id}>
-                <GlowCard identifier={`experience-${exp.id}`}>
-                  <div className="p-4 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent" />
-                    <div className="flex justify-center mb-3">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
-                        bg-indigo-500/7 border border-indigo-500/18
-                        text-[0.65rem] font-semibold tracking-widest uppercase text-indigo-400">
-                        <span className="w-1 h-1 rounded-full bg-indigo-400" />
-                        {exp.duration}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-5 px-2 py-3">
-                      <div className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center
-                        bg-indigo-500/8 border border-indigo-500/18 text-indigo-400
-                        transition-all duration-300
-                        hover:scale-110 hover:bg-indigo-500/15 hover:shadow-[0_0_18px_rgba(99,102,241,0.25)]">
-                        <BsPersonWorkspace size={20} />
-                      </div>
-                      <div>
-                        <p className="text-sm sm:text-base font-bold uppercase tracking-wide text-slate-100 mb-1">
-                          {exp.title}
-                        </p>
-                        <p className="text-xs sm:text-sm text-white/45 font-medium">
-                          {exp.company}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-indigo-500/12 rounded-br-xl pointer-events-none" />
-                  </div>
-                </GlowCard>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[18rem_1fr] lg:gap-12">
+        <div className="hidden lg:block">
+          <div className="neu-inset sticky top-28 rounded-[var(--r-xl)] p-6">
+            <AnimationLottie animationPath={experienceAnimation} />
+          </div>
         </div>
+
+        <StaggerContainer as="ol" className="relative flex flex-col gap-5 border-l border-line pl-6 sm:pl-8">
+          {experiences.map((exp) => (
+            <StaggerItem as="li" key={exp.id} className="relative">
+              <span
+                className="absolute -left-[1.85rem] top-7 h-3 w-3 rounded-full border-2 border-accent bg-canvas sm:-left-[2.35rem]"
+                aria-hidden="true"
+              />
+              <GlowCard identifier={`experience-${exp.id}`}>
+                <div className="relative p-5 sm:p-6">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+                    <div>
+                      <h3 className="text-lg font-bold text-fg">{exp.title}</h3>
+                      <p className="text-sm font-medium text-accent-text">{exp.company}</p>
+                    </div>
+                    <p className="shrink-0 font-mono text-[0.75rem] text-fg-subtle sm:text-right">
+                      <time>{exp.start}</time> – <time>{exp.end}</time>
+                      <span className="block">{exp.location}</span>
+                    </p>
+                  </div>
+
+                  <ul className="mt-4 flex list-disc flex-col gap-2 pl-5 text-sm leading-relaxed text-fg-muted marker:text-accent">
+                    {exp.highlights.map((h) => (
+                      <li key={h}>{h}</li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <ul className="flex flex-wrap gap-1.5" aria-label="Focus areas">
+                      {exp.tracks.map((t) => (
+                        <li key={t} className="chip">{trackLabel[t]}</li>
+                      ))}
+                    </ul>
+                    {exp.links.map(({ label, href }) => (
+                      <a
+                        key={href}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-accent-text hover:underline"
+                      >
+                        {label} <HiArrowUpRight size={11} aria-hidden="true" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </GlowCard>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
       </div>
-    </div>
+    </section>
   );
 }
 

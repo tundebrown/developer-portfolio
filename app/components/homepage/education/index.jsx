@@ -1,69 +1,85 @@
-// @flow strict
+import { certifications, volunteering } from "@/utils/data/credentials";
 import { educations } from "@/utils/data/educations";
-import { PiGraduationCapBold } from "react-icons/pi";
+import { PiCertificate, PiGraduationCap, PiUsersThree } from "react-icons/pi";
 import lottieFile from '../../../assets/lottie/study.json';
 import AnimationLottie from "../../helper/animation-lottie";
-import GlowCard from "../../helper/glow-card";
-import { FadeLeft, FadeRight, SectionHeading, StaggerContainer, StaggerItem } from "../../helper/motion";
+import { SectionHeading, StaggerContainer, StaggerItem } from "../../helper/motion";
+
+function IconBadge({ Icon }) {
+  return (
+    <span className="neu-raised grid h-11 w-11 shrink-0 place-items-center rounded-xl text-accent-text" aria-hidden="true">
+      <Icon size={20} />
+    </span>
+  );
+}
 
 function Education() {
   return (
-    <div id="education" className="relative border-t border-indigo-500/10 my-12 lg:my-24">
-      <div className="flex justify-center -translate-y-px">
-        <div className="w-3/4 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
-      </div>
+    <section id="education" aria-labelledby="education-heading" className="relative scroll-mt-24 py-12 lg:py-20">
+      <SectionHeading
+        eyebrow="Background"
+        title={<span id="education-heading">Education & credentials</span>}
+        className="mb-10"
+      />
 
-      <SectionHeading eyebrow="My Background" title="Education" className="my-8 lg:py-10" />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.4fr]">
+        <div className="flex flex-col gap-6">
+          {educations.map((edu) => (
+            <article key={edu.id} className="surface-card flex gap-4 p-5 sm:p-6">
+              <IconBadge Icon={PiGraduationCap} />
+              <div>
+                <h3 className="text-lg font-bold text-fg">{edu.title}</h3>
+                <p className="text-sm font-medium text-accent-text">{edu.grade}</p>
+                <p className="mt-1 text-sm text-fg-muted">{edu.institution}</p>
+                <p className="mt-1 font-mono text-[0.75rem] text-fg-subtle">{edu.duration}</p>
+              </div>
+            </article>
+          ))}
 
-      <div className="py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-
-          <FadeLeft className="flex justify-center items-center">
-            <div className="w-full max-w-xs">
+          <div className="neu-inset hidden rounded-[var(--r-xl)] p-6 lg:block">
+            <div className="mx-auto max-w-[16rem]">
               <AnimationLottie animationPath={lottieFile} />
             </div>
-          </FadeLeft>
+          </div>
+        </div>
 
-          <StaggerContainer className="flex flex-col gap-4">
-            {educations.map((education) => (
-              <StaggerItem key={education.id}>
-                <GlowCard identifier={`education-${education.id}`}>
-                  <div className="p-4 relative overflow-hidden text-white">
-                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent" />
-                    <div className="flex justify-center mb-3">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
-                        bg-indigo-500/7 border border-indigo-500/18
-                        text-[0.65rem] font-semibold tracking-widest uppercase text-indigo-400">
-                        <span className="w-1 h-1 rounded-full bg-indigo-400" />
-                        {education.duration}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-5 px-2 py-3">
-                      <div className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center
-                        bg-indigo-500/8 border border-indigo-500/18 text-indigo-400
-                        transition-all duration-300
-                        hover:scale-110 hover:bg-indigo-500/15 hover:shadow-[0_0_18px_rgba(99,102,241,0.25)]">
-                        <PiGraduationCapBold size={22} />
-                      </div>
-                      <div>
-                        <p className="text-sm sm:text-base font-bold uppercase tracking-wide text-slate-100 mb-1">
-                          {education.title}
-                        </p>
-                        <p className="text-xs sm:text-sm text-white/45 font-medium">
-                          {education.institution}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-indigo-500/12 rounded-br-xl pointer-events-none" />
-                  </div>
-                </GlowCard>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
+        <div className="flex flex-col gap-6">
+          <section aria-labelledby="certs-heading" className="surface-card p-5 sm:p-6">
+            <div className="mb-4 flex items-center gap-3">
+              <IconBadge Icon={PiCertificate} />
+              <h3 id="certs-heading" className="text-lg font-bold text-fg">Certifications</h3>
+            </div>
+            <StaggerContainer as="ul" className="grid grid-cols-1 gap-x-6 sm:grid-cols-2">
+              {certifications.map((c) => (
+                <StaggerItem as="li" key={c.id} className="border-t border-line py-3">
+                  <p className="text-sm font-semibold text-fg">{c.title}</p>
+                  <p className="text-xs text-fg-muted">
+                    {c.issuer} · <span className="font-mono">{c.year}</span>
+                  </p>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </section>
 
+          <section aria-labelledby="volunteering-heading" className="surface-card p-5 sm:p-6">
+            <div className="mb-4 flex items-center gap-3">
+              <IconBadge Icon={PiUsersThree} />
+              <h3 id="volunteering-heading" className="text-lg font-bold text-fg">Volunteering & community</h3>
+            </div>
+            <ul className="flex flex-col">
+              {volunteering.map((v) => (
+                <li key={v.id} className="border-t border-line py-3">
+                  <p className="text-sm font-semibold text-fg">
+                    {v.role} <span className="font-normal text-fg-muted">· {v.organisation}</span>
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-fg-muted">{v.description}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

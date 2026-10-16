@@ -2,80 +2,41 @@
 
 import { useEffect } from 'react';
 
-const GlowCard = ({ children, identifier }) => {
+// Card whose border lights up towards the pointer. Disabled on touch and
+// reduced-motion devices in card.scss, where it falls back to a plain card.
+const GlowCard = ({ children, identifier, className = '' }) => {
   useEffect(() => {
     const CONTAINER = document.querySelector(`.glow-container-${identifier}`);
     const CARDS = document.querySelectorAll(`.glow-card-${identifier}`);
+    if (!CONTAINER || window.matchMedia('(hover: none)').matches) return;
 
-    const CONFIG = {
-      proximity: 40,
-      spread: 80,
-      blur: 12,
-      gap: 32,
-      vertical: false,
-      opacity: 0,
-    };
+    const CONFIG = { proximity: 40, spread: 80, blur: 12, opacity: 0 };
 
     const UPDATE = (event) => {
       for (const CARD of CARDS) {
-        const CARD_BOUNDS = CARD.getBoundingClientRect();
+        const b = CARD.getBoundingClientRect();
+        const near =
+          event?.x > b.left - CONFIG.proximity &&
+          event?.x < b.left + b.width + CONFIG.proximity &&
+          event?.y > b.top - CONFIG.proximity &&
+          event?.y < b.top + b.height + CONFIG.proximity;
+        CARD.style.setProperty('--active', near ? 1 : CONFIG.opacity);
 
-        if (
-          event?.x > CARD_BOUNDS.left - CONFIG.proximity &&
-          event?.x < CARD_BOUNDS.left + CARD_BOUNDS.width + CONFIG.proximity &&
-          event?.y > CARD_BOUNDS.top - CONFIG.proximity &&
-          event?.y < CARD_BOUNDS.top + CARD_BOUNDS.height + CONFIG.proximity
-        ) {
-          CARD.style.setProperty('--active', 1);
-        } else {
-          CARD.style.setProperty('--active', CONFIG.opacity);
-        }
-
-        const CARD_CENTER = [
-          CARD_BOUNDS.left + CARD_BOUNDS.width * 0.5,
-          CARD_BOUNDS.top + CARD_BOUNDS.height * 0.5,
-        ];
-
-        let ANGLE =
-          (Math.atan2(event?.y - CARD_CENTER[1], event?.x - CARD_CENTER[0]) * 180) / Math.PI;
-        ANGLE = ANGLE < 0 ? ANGLE + 360 : ANGLE;
-
-        CARD.style.setProperty('--start', ANGLE + 90);
+        let angle = (Math.atan2(event?.y - (b.top + b.height / 2), event?.x - (b.left + b.width / 2)) * 180) / Math.PI;
+        angle = angle < 0 ? angle + 360 : angle;
+        CARD.style.setProperty('--start', angle + 90);
       }
     };
 
-    document.body.addEventListener('pointermove', UPDATE);
-
-    const RESTYLE = () => {
-      CONTAINER.style.setProperty('--gap', CONFIG.gap);
-      CONTAINER.style.setProperty('--blur', CONFIG.blur);
-      CONTAINER.style.setProperty('--spread', CONFIG.spread);
-      CONTAINER.style.setProperty('--direction', CONFIG.vertical ? 'column' : 'row');
-    };
-
-    RESTYLE();
-    UPDATE();
-
-    return () => {
-      document.body.removeEventListener('pointermove', UPDATE);
-    };
+    CONTAINER.style.setProperty('--blur', CONFIG.blur);
+    CONTAINER.style.setProperty('--spread', CONFIG.spread);
+    document.body.addEventListener('pointermove', UPDATE, { passive: true });
+    return () => document.body.removeEventListener('pointermove', UPDATE);
   }, [identifier]);
 
   return (
     <div className={`glow-container-${identifier} glow-container`}>
-      <article
-        className={`
-          glow-card glow-card-${identifier}
-          h-fit cursor-pointer relative w-full
-          rounded-2xl
-          border border-violet-500/15
-          bg-white/3 backdrop-blur-xl
-          text-gray-200
-          shadow-[0_0_30px_rgba(139,92,246,0.05),inset_0_1px_0_rgba(255,255,255,0.04)]
-          hover:border-transparent
-          transition-all duration-300
-        `}
-      >
+      <article className={`glow-card glow-card-${identifier} surface-card relative h-fit w-full ${className}`}>
         <div className="glows" />
         {children}
       </article>

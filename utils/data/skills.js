@@ -1,110 +1,73 @@
+// Icon marquee: only skills listed in the CVs that have an SVG in utils/skill-image.js.
 export const skillsData = [
-  'HTML',
-  'CSS',
-  'Javascript',
-  'Typescript',
   'React',
   'Next JS',
+  'Typescript',
+  'Javascript',
   'Tailwind',
-  'MongoDB',
-  'MySQL',
-  'PostgreSQL',
-  'Git',
-  'AWS',
-  'Bootstrap',
-  'Docker',
-  'Go',
-  'Figma',
-  'Firebase',
+  'HTML',
+  'CSS',
   'MaterialUI',
+  'GraphQL',
+  'PHP',
+  'PostgreSQL',
+  'MySQL',
+  'MongoDB',
+  'Prisma',
+  'Docker',
+  'AWS',
+  'GCP',
+  'Linux',
   'Nginx',
-  'Strapi'
+  'Git',
+  'Figma',
+  'Photoshop',
 ]
 
-// Choose your skills from below. Make sure it's in the same format and spelled correctly.
-// Couldn't find the required skills? Raise an issue on github at https://github.com/hhhrrrttt222111/developer-portfolio/issues/new
-
-
-// AVAILABLE SKILLS
-
-/* 
-  HTML
-  CSS
-  JS 
-  React
-  Next JS
-  Nuxt JS
-  Node JS
-  Vue
-  Angular
-  Docker
-  Photoshop
-  Illustrator
-  Svelte
-  GCP
-  Azure
-  Fastify
-  Haxe
-  Ionic
-  Markdown
-  Microsoft Office
-  Picsart
-  Sketch
-  Unity
-  WolframAlpha
-  Adobe XD
-  After Effects
-  Bootstrap
-  Bulma
-  CapacitorJs
-  Coffeescript
-  MemSQL
-  C
-  C++
-  C#
-  Python
-  Java
-  Julia
-  Matlab
-  Swift
-  Ruby
-  Kotlin
-  Go
-  PHP
-  Flutter
-  Dart
-  Typescript
-  Swift
-  Git
-  Figma
-  Canva
-  Ubuntu
-  Bootstrap
-  MongoDB
-  Tailwind
-  ViteJS
-  VuetifyJS
-  MySQL
-  PostgreSQL
-  Prisma
-  AWS
-  Firebase
-  Blender
-  Premiere Pro
-  Adobe Audition
-  Deno
-  Django
-  Gimp
-  Graphql
-  Lightroom
-  MaterialUI
-  Nginx
-  Numpy
-  OpenCV
-  Pytorch
-  Selenium
-  Strapi
-  Tensorflow
-  Webex
-  Wordpress
-*/
+// Grouped as in the CVs' "Technical Skills" sections.
+export const skillGroups = [
+  {
+    title: 'Frontend',
+    items: ['React.js', 'Next.js', 'TypeScript', 'JavaScript (ES2022+)', 'Tailwind CSS', 'Shadcn/UI', 'Material UI', 'Framer Motion', 'Three.js', 'Recharts', 'TradingView Lightweight Charts'],
+  },
+  {
+    title: 'State & data',
+    items: ['TanStack Query', 'Zustand', 'Custom React hooks', 'REST', 'WebSocket (Socket.io)'],
+  },
+  {
+    title: 'Backend',
+    items: ['Node.js', 'Express.js', 'Nest.js', 'PHP', 'Laravel', 'REST API design', 'GraphQL (basic)'],
+  },
+  {
+    title: 'Databases',
+    items: ['PostgreSQL', 'MySQL', 'MongoDB', 'Prisma ORM'],
+  },
+  {
+    title: 'DevOps & cloud',
+    items: ['Docker', 'Docker Compose', 'CI/CD (GitHub Actions)', 'AWS (EC2, S3)', 'Google Cloud Platform', 'Linux server administration', 'Nginx', 'PM2', 'SSL', 'Vercel'],
+  },
+  {
+    title: 'Blockchain (EVM)',
+    items: ['Ethereum', 'Polygon', 'Solidity (reading and integration)', 'Hardhat', 'Web3.js', 'Ethers.js', 'MetaMask'],
+  },
+  {
+    title: 'Blockchain (Cardano)',
+    items: ['DexHunter API', 'Cardano wallet adapters', 'Social-login wallets', 'Aiken'],
+  },
+  {
+    title: 'Mobile',
+    items: ['React Native'],
+  },
+  {
+    title: 'Auth & security',
+    items: ['JWT', 'OAuth2', 'Role-based access control'],
+  },
+  {
+    title: 'i18n & SEO',
+    items: ['next-intl', 'next-sitemap', 'Open Graph / Twitter cards', 'robots.txt', 'Structured data'],
+  },
+  {
+    title: 'Tools & design',
+    items: ['Git', 'Figma', 'Photoshop', 'CorelDraw'],
+  },
+]

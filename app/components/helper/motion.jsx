@@ -1,193 +1,144 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 
 /* ── Shared easing ── */
-export const easing = [0.25, 0.46, 0.45, 0.94];
+export const easing = [0.22, 1, 0.36, 1];
 
-/* ── Transition configs ── */
-const transitionIn  = { duration: 0.5, ease: easing };
-const transitionOut = { duration: 0.35, ease: easing };
+const transitionIn = { duration: 0.5, ease: easing };
+const transitionOut = { duration: 0.3, ease: easing };
 
-/* ── Variants factory — different in/out transitions ── */
 const makeVariants = (hidden, visible) => ({
   hidden: { ...hidden, transition: transitionOut },
   visible: { ...visible, transition: transitionIn },
 });
 
-export const fadeUpVariants = makeVariants(
-  { opacity: 0, y: 40,  filter: "blur(8px)" },
-  { opacity: 1, y: 0,   filter: "blur(0px)" }
-);
+export const fadeUpVariants = makeVariants({ opacity: 0, y: 28 }, { opacity: 1, y: 0 });
+export const fadeLeftVariants = makeVariants({ opacity: 0, x: -32 }, { opacity: 1, x: 0 });
+export const fadeRightVariants = makeVariants({ opacity: 0, x: 32 }, { opacity: 1, x: 0 });
+export const itemVariants = makeVariants({ opacity: 0, y: 18 }, { opacity: 1, y: 0 });
 
-export const fadeInVariants = makeVariants(
-  { opacity: 0, filter: "blur(6px)" },
-  { opacity: 1, filter: "blur(0px)" }
-);
-
-export const fadeLeftVariants = makeVariants(
-  { opacity: 0, x: -44, filter: "blur(6px)" },
-  { opacity: 1, x: 0,   filter: "blur(0px)" }
-);
-
-export const fadeRightVariants = makeVariants(
-  { opacity: 0, x: 44,  filter: "blur(6px)" },
-  { opacity: 1, x: 0,   filter: "blur(0px)" }
-);
+// Opacity-only fallback for users who prefer reduced motion.
+const fadeOnly = makeVariants({ opacity: 0 }, { opacity: 1 });
 
 export const containerVariants = {
-  hidden:  { transition: { staggerChildren: 0.06, staggerDirection: -1 } },
-  visible: { transition: { staggerChildren: 0.11, delayChildren: 0.05  } },
+  hidden: { transition: { staggerChildren: 0.04, staggerDirection: -1 } },
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.04 } },
 };
 
-export const itemVariants = makeVariants(
-  { opacity: 0, y: 24,  filter: "blur(6px)" },
-  { opacity: 1, y: 0,   filter: "blur(0px)" }
-);
-
-/* ── useScrollInView — shared hook, no `once` ── */
-function useScrollInView(margin = "-80px 0px") {
+/* Reveal once: content stays put after it has been seen, so long pages don't
+   keep re-animating while scrolling back up. */
+function useReveal(margin = "-80px 0px") {
   const ref = useRef(null);
-  // once: false  →  re-fires every time element enters/leaves viewport
-  const isInView = useInView(ref, { once: false, margin });
+  const isInView = useInView(ref, { once: true, margin });
   return { ref, isInView };
 }
 
-/* ──────────────────────────────────────────
-   SectionWrapper
-   Single element fade-up on enter, fade-down on leave
-─────────────────────────────────────────── */
-export function SectionWrapper({ children, className = "", delay = 0 }) {
-  const { ref, isInView } = useScrollInView("-80px 0px");
+function useVariants(variants) {
+  return useReducedMotion() ? fadeOnly : variants;
+}
 
+export function SectionWrapper({ children, className = "", as = "div" }) {
+  const { ref, isInView } = useReveal();
+  const variants = useVariants(fadeUpVariants);
+  const Comp = motion[as];
   return (
-    <motion.div
+    <Comp
       ref={ref}
-      variants={fadeUpVariants}
+      variants={variants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
-      custom={delay}
       className={className}
-      style={{ willChange: "opacity, transform" }}
     >
       {children}
-    </motion.div>
+    </Comp>
   );
 }
 
-/* ──────────────────────────────────────────
-   StaggerContainer
-   Staggers children in on enter, reverse-staggers out on leave
-─────────────────────────────────────────── */
-export function StaggerContainer({ children, className = "" }) {
-  const { ref, isInView } = useScrollInView("-60px 0px");
-
+export function StaggerContainer({ children, className = "", as = "div" }) {
+  const { ref, isInView } = useReveal("-60px 0px");
+  const Comp = motion[as];
   return (
-    <motion.div
+    <Comp
       ref={ref}
       variants={containerVariants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
       className={className}
-      style={{ willChange: "opacity" }}
     >
       {children}
-    </motion.div>
+    </Comp>
   );
 }
 
-/* ──────────────────────────────────────────
-   StaggerItem
-   Must be a direct child of StaggerContainer
-─────────────────────────────────────────── */
-export function StaggerItem({ children, className = "" }) {
+export function StaggerItem({ children, className = "", as = "div" }) {
+  const variants = useVariants(itemVariants);
+  const Comp = motion[as];
   return (
-    <motion.div
-      variants={itemVariants}
-      style={{ willChange: "opacity, transform" }}
-      className={className}
-    >
+    <Comp variants={variants} className={className}>
       {children}
-    </motion.div>
+    </Comp>
   );
 }
 
-/* ──────────────────────────────────────────
-   FadeLeft / FadeRight
-   For two-column layouts
-─────────────────────────────────────────── */
-export function FadeLeft({ children, className = "", delay = 0 }) {
-  const { ref, isInView } = useScrollInView("-60px 0px");
-
+function Fade({ children, className, delay, base }) {
+  const { ref, isInView } = useReveal("-60px 0px");
+  const variants = useVariants(base);
   return (
     <motion.div
       ref={ref}
-      variants={fadeLeftVariants}
+      variants={variants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
-      transition={isInView
-        ? { ...transitionIn,  delay }
-        : { ...transitionOut, delay: 0 }
-      }
+      transition={{ ...transitionIn, delay }}
       className={className}
-      style={{ willChange: "opacity, transform" }}
     >
       {children}
     </motion.div>
   );
+}
+
+export function FadeLeft({ children, className = "", delay = 0 }) {
+  return <Fade className={className} delay={delay} base={fadeLeftVariants}>{children}</Fade>;
 }
 
 export function FadeRight({ children, className = "", delay = 0 }) {
-  const { ref, isInView } = useScrollInView("-60px 0px");
-
-  return (
-    <motion.div
-      ref={ref}
-      variants={fadeRightVariants}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      transition={isInView
-        ? { ...transitionIn,  delay }
-        : { ...transitionOut, delay: 0 }
-      }
-      className={className}
-      style={{ willChange: "opacity, transform" }}
-    >
-      {children}
-    </motion.div>
-  );
+  return <Fade className={className} delay={delay} base={fadeRightVariants}>{children}</Fade>;
 }
 
-/* ──────────────────────────────────────────
-   SectionHeading
-   Eyebrow + title stagger in/out together
-─────────────────────────────────────────── */
-export function SectionHeading({ eyebrow, title, className = "" }) {
-  const { ref, isInView } = useScrollInView("-60px 0px");
+/* Eyebrow + title. `align` lets sections opt into left-aligned headings. */
+export function SectionHeading({ eyebrow, title, description, className = "", align = "left", as = "h2" }) {
+  const { ref, isInView } = useReveal("-60px 0px");
+  const variants = useVariants(itemVariants);
+  const Title = motion[as];
+  const alignment = align === "center" ? "items-center text-center" : "items-start text-left";
 
   return (
     <motion.div
       ref={ref}
-      className={`flex flex-col items-center gap-3 ${className}`}
+      className={`flex flex-col gap-3 ${alignment} ${className}`}
       variants={containerVariants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
     >
-      <motion.div variants={itemVariants} className="flex items-center gap-3">
-        <span className="h-px w-5 bg-indigo-500/50" />
-        <span className="text-[0.65rem] font-semibold tracking-[0.2em] uppercase text-indigo-400/70">
+      {eyebrow && (
+        <motion.p variants={variants} className="eyebrow flex items-center gap-2">
+          <span className="h-px w-6 bg-accent/60" aria-hidden="true" />
           {eyebrow}
-        </span>
-        <span className="h-px w-5 bg-indigo-500/50" />
-      </motion.div>
-
-      <motion.h2
-        variants={itemVariants}
-        className="text-2xl lg:text-3xl font-extrabold text-slate-100 tracking-tight"
+        </motion.p>
+      )}
+      <Title
+        variants={variants}
+        className="text-3xl font-extrabold tracking-tight text-fg lg:text-4xl"
       >
         {title}
-      </motion.h2>
+      </Title>
+      {description && (
+        <motion.p variants={variants} className="max-w-2xl text-[0.95rem] leading-relaxed text-fg-muted">
+          {description}
+        </motion.p>
+      )}
     </motion.div>
   );
 }

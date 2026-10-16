@@ -1,0 +1,327 @@
+@import "tailwindcss";
+
+/* Dark mode follows the data-theme attribute set before first paint (see app/layout.js). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ───────────────────────── Design tokens ─────────────────────────
+   Light is the default; dark overrides. Components use the semantic
+   Tailwind colours mapped in @theme below, never raw hex values. */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --canvas: #eceef5;
+  --elev: #f5f6fa;
+  --surface: #f8f9fc;
+  --surface-2: #eff1f7;
+  --neu-bg: #eceef5;
+
+  /* Text */
+  --fg: #12142a;
+  --fg-muted: #474d66;
+  --fg-subtle: #626882;
+
+  /* Lines */
+  --line: rgb(18 20 42 / 0.1);
+  --line-strong: rgb(18 20 42 / 0.2);
+
+  /* Brand */
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-text: #4338ca;
+  --on-accent: #ffffff;
+  --signal: #0f766e;
+  --danger: #b91c1c;
+  --ring: #4f46e5;
+
+  /* Glass */
+  --glass-bg: rgb(255 255 255 / 0.62);
+  --glass-bg-strong: rgb(255 255 255 / 0.82);
+  --glass-border: rgb(255 255 255 / 0.75);
+  --glass-outline: rgb(18 20 42 / 0.08);
+  --glass-highlight: inset 0 1px 0 rgb(255 255 255 / 0.9);
+  --glass-blur: 20px;
+
+  /* Neumorphism: a light and a dark shadow derived from --neu-bg */
+  --neu-light: rgb(255 255 255 / 0.95);
+  --neu-dark: rgb(150 158 186 / 0.55);
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgb(18 20 42 / 0.05), 0 2px 8px rgb(18 20 42 / 0.04);
+  --shadow-md: 0 8px 24px rgb(18 20 42 / 0.08);
+  --shadow-lg: 0 24px 60px rgb(18 20 42 / 0.12);
+
+  /* Backdrop */
+  --mesh-1: rgb(99 102 241 / 0.16);
+  --mesh-2: rgb(20 184 166 / 0.1);
+  --grid-line: rgb(18 20 42 / 0.045);
+
+  /* Shape & motion */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-base: 240ms;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #0a0c16;
+  --elev: #0f1220;
+  --surface: #121527;
+  --surface-2: #181c31;
+  --neu-bg: #141829;
+
+  --fg: #e9ebf5;
+  --fg-muted: #a6abc2;
+  --fg-subtle: #858ba5;
+
+  --line: rgb(165 172 214 / 0.13);
+  --line-strong: rgb(165 172 214 / 0.26);
+
+  --accent: #5b5ff0; /* white text 4.84:1 */
+  --accent-hover: #5155e6;
+  --accent-text: #a5b4fc;
+  --on-accent: #ffffff;
+  --signal: #2dd4bf;
+  --danger: #f87171;
+  --ring: #a5b4fc;
+
+  --glass-bg: rgb(18 21 39 / 0.58);
+  --glass-bg-strong: rgb(15 18 32 / 0.85);
+  --glass-border: rgb(255 255 255 / 0.08);
+  --glass-outline: rgb(0 0 0 / 0);
+  --glass-highlight: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  --glass-blur: 16px;
+
+  --neu-light: rgb(255 255 255 / 0.045);
+  --neu-dark: rgb(0 0 0 / 0.6);
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 10px 30px rgb(0 0 0 / 0.35);
+  --shadow-lg: 0 30px 80px rgb(0 0 0 / 0.5);
+
+  --mesh-1: rgb(99 102 241 / 0.18);
+  --mesh-2: rgb(45 212 191 / 0.07);
+  --grid-line: rgb(165 172 214 / 0.045);
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-elev: var(--elev);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-text: var(--accent-text);
+  --color-on-accent: var(--on-accent);
+  --color-signal: var(--signal);
+  --color-danger: var(--danger);
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+
+  --shadow-soft: var(--shadow-sm);
+  --shadow-float: var(--shadow-md);
+  --shadow-lift: var(--shadow-lg);
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+@layer base {
+  html {
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    transition: background-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 30%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+/* Suppress colour transitions for one frame while the theme changes. */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}
+
+/* ───────────────────────── Surfaces ─────────────────────────
+   glass: translucent layers that float over content (nav, overlays, panels).
+   surface-card: the default solid container for content.
+   neu-*: tactile controls; always paired with a border and a label/icon. */
+@utility glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight), 0 0 0 1px var(--glass-outline), var(--shadow-md);
+}
+
+@utility glass-strong {
+  background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 8px)) saturate(160%);
+  backdrop-filter: blur(calc(var(--glass-blur) + 8px)) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight), 0 0 0 1px var(--glass-outline), var(--shadow-lg);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .glass-strong {
+    background: var(--elev);
+  }
+}
+
+@utility surface-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+@utility neu-raised {
+  background: var(--neu-bg);
+  border: 1px solid var(--line);
+  box-shadow: -4px -4px 10px var(--neu-light), 4px 4px 12px var(--neu-dark);
+}
+
+@utility neu-inset {
+  background: var(--neu-bg);
+  border: 1px solid var(--line);
+  box-shadow: inset 3px 3px 7px var(--neu-dark), inset -3px -3px 7px var(--neu-light);
+}
+
+/* Raised control that presses in on :active. */
+@utility neu-button {
+  background: var(--neu-bg);
+  border: 1px solid var(--line);
+  color: var(--fg-muted);
+  box-shadow: -3px -3px 8px var(--neu-light), 3px 3px 9px var(--neu-dark);
+  transition: color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+
+  &:hover {
+    color: var(--accent-text);
+    border-color: var(--line-strong);
+  }
+
+  &:active,
+  &[aria-pressed="true"] {
+    box-shadow: inset 2px 2px 6px var(--neu-dark), inset -2px -2px 6px var(--neu-light);
+  }
+}
+
+/* ───────────────────────── Controls ───────────────────────── */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--r-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+@utility btn-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+  border: 1px solid transparent;
+  box-shadow: 0 6px 20px color-mix(in oklab, var(--accent) 30%, transparent);
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+  }
+}
+
+@utility btn-secondary {
+  background: var(--surface);
+  color: var(--fg);
+  border: 1px solid var(--line-strong);
+
+  &:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent-text);
+  }
+}
+
+@utility chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: color-mix(in oklab, var(--surface-2) 70%, transparent);
+  color: var(--fg-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+/* ───────────────────────── Third-party ───────────────────────── */
+:root {
+  --toastify-color-light: var(--surface);
+  --toastify-color-dark: var(--surface);
+  --toastify-text-color-light: var(--fg);
+  --toastify-text-color-dark: var(--fg);
+  --toastify-color-success: var(--signal);
+  --toastify-color-error: var(--danger);
+  --toastify-color-progress-light: var(--accent);
+  --toastify-color-progress-dark: var(--accent);
+}
+
+/* ───────────────────────── Motion ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,9 +1,12 @@
 "use client";
-// @flow strict
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
+import { HiArrowUpRight } from "react-icons/hi2";
+import { personalData } from "@/utils/data/personal-data";
+import ThemeToggle from "./helper/theme-toggle";
 
 const navItems = [
   { label: "Projects", href: "#projects" },
@@ -11,7 +14,7 @@ const navItems = [
   { label: "Experience", href: "#experience" },
   { label: "Skills", href: "#skills" },
   { label: "Education", href: "#education" },
-  { label: "Blogs", href: "#blogs" },
+  { label: "Blog", href: "#blogs" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -22,217 +25,194 @@ function Navbar() {
 
   const pathname = usePathname();
   const router = useRouter();
-
   const isHome = pathname === "/";
 
-  // track scroll for shadow
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // highlight active section via IntersectionObserver
+  // Highlight the section currently in view.
   useEffect(() => {
-    // Only run observer if we're on the home page
     if (!isHome) return;
-
-    const sectionIds = navItems
-      .filter((n) => n.href.startsWith("#"))
-      .map((n) => n.href.slice(1));
-
-    const observers = sectionIds.map((id) => {
-      const el = document.getElementById(id);
+    const observers = navItems.map(({ href }) => {
+      const el = document.getElementById(href.slice(1));
       if (!el) return null;
       const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActive(id);
-        },
+        ([entry]) => entry.isIntersecting && setActive(href.slice(1)),
         { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
       );
       obs.observe(el);
       return obs;
     });
-
     return () => observers.forEach((o) => o?.disconnect());
   }, [isHome]);
 
-  // smooth scroll handler
-  const handleNavClick = async (e, href) => {
-    if (!href.startsWith("#")) return; // let Next.js handle /blog etc.
+  // Escape closes the drawer; lock scroll while it's open.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e) => e.key === "Escape" && setMobileOpen(false);
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  const handleNavClick = (e, href) => {
     e.preventDefault();
-
-    const id = href.slice(1);
-
-    // If we're not on home page, navigate to home first, then scroll
+    setMobileOpen(false);
     if (!isHome) {
-      setMobileOpen(false);
-      // Navigate to home page with the hash
       router.push(`/${href}`);
       return;
     }
-
-    // We're on home page, scroll to the section
+    const id = href.slice(1);
     const el = document.getElementById(id);
     if (!el) return;
     setActive(id);
-    setMobileOpen(false);
     el.scrollIntoView({ behavior: "smooth", block: "start" });
+    history.replaceState(null, "", href);
   };
 
-  // Handle initial scroll after navigation to home page with hash
+  // Scroll to the hash after arriving from another page.
   useEffect(() => {
-    if (isHome && window.location.hash) {
-      const id = window.location.hash.slice(1);
-      const el = document.getElementById(id);
-      if (el) {
-        // Small delay to ensure DOM is ready
-        setTimeout(() => {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-          setActive(id);
-        }, 100);
-      }
-    }
+    if (!isHome || !window.location.hash) return;
+    const el = document.getElementById(window.location.hash.slice(1));
+    if (!el) return;
+    const t = setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    return () => clearTimeout(t);
   }, [isHome]);
 
   return (
     <>
-      <nav
-        className={`sticky top-0 z-9999 backdrop-blur-xl bg-[#060818]/70 border-b border-indigo-500/12 transition-shadow duration-300 ${
-          scrolled ? "shadow-[0_4px_30px_rgba(99,102,241,0.08)]" : ""
-        } [mask-image:linear-gradient(to_right,transparent,black_0%,black_100%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_0%,black_100%,transparent)] md:[mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] md:[-webkit-mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]`}
+      <header
+        className={`sticky top-0 z-[60] transition-[padding] duration-300 ${
+          scrolled ? "pt-2 sm:pt-3" : "pt-3 sm:pt-5"
+        }`}
       >
-        {/* Bottom gradient hairline */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
-
-        <div className="max-w-[92rem] mx-auto px-6 sm:px-12 flex items-center justify-between h-16">
-          {/* Logo */}
+        <nav
+          aria-label="Primary"
+          className={`glass mx-auto flex h-14 w-[calc(100%-1.5rem)] max-w-[84rem] items-center justify-between gap-3 rounded-2xl px-3 sm:px-5 transition-shadow duration-300`}
+        >
           <Link
             href="/"
-            className="flex items-center gap-2 text-sm font-bold tracking-widest uppercase text-indigo-400 hover:text-indigo-300 transition-colors duration-200"
+            className="flex items-center gap-2.5 rounded-lg text-sm font-bold tracking-tight text-fg"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_8px_#818cf8]" />
-            Tunde Olupitan
+            <span
+              aria-hidden="true"
+              className="neu-raised grid h-8 w-8 place-items-center rounded-[10px] font-mono text-[0.7rem] font-semibold text-accent-text"
+            >
+              TO
+            </span>
+            <span className="hidden sm:inline">{personalData.name}</span>
           </Link>
 
-          {/* Desktop links */}
-          <ul className="hidden md:flex items-center gap-1">
+          <ul className="hidden lg:flex items-center gap-0.5">
             {navItems.map(({ label, href }) => {
-              const id = href.startsWith("#") ? href.slice(1) : null;
-              const isActive = id && active === id && isHome;
+              const isActive = isHome && active === href.slice(1);
               return (
-                <li key={label}>
+                <li key={href}>
                   <a
                     href={isHome ? href : `/${href}`}
                     onClick={(e) => handleNavClick(e, href)}
-                    className={`relative px-4 py-2 text-[0.7rem] font-semibold tracking-widest uppercase rounded-md
-                      transition-all duration-200 cursor-pointer block
-                      ${
-                        isActive
-                          ? "text-indigo-400 bg-indigo-500/10"
-                          : "text-white/45 hover:text-white hover:bg-indigo-500/8"
-                      }`}
+                    aria-current={isActive ? "true" : undefined}
+                    className={`block rounded-lg px-3 py-1.5 text-[0.82rem] font-medium transition-colors duration-150 ${
+                      isActive
+                        ? "bg-accent/12 text-accent-text"
+                        : "text-fg-muted hover:text-fg hover:bg-fg/5"
+                    }`}
                   >
                     {label}
-                    {/* Active underline dot */}
-                    {isActive && (
-                      <span
-                        className="absolute bottom-0.5 left-1/2 -translate-x-1/2
-                        w-1 h-1 rounded-full bg-indigo-400
-                        shadow-[0_0_6px_#818cf8]"
-                      />
-                    )}
                   </a>
                 </li>
               );
             })}
           </ul>
 
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden w-9 h-9 flex items-center justify-center rounded-xl
-              bg-white/3 border border-indigo-500/20 text-white/60
-              hover:bg-indigo-500/10 hover:text-white transition-all duration-200"
-            onClick={() => setMobileOpen((o) => !o)}
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <HiX size={18} /> : <HiMenuAlt3 size={18} />}
-          </button>
-        </div>
-      </nav>
+          <div className="flex items-center gap-2">
+            <ThemeToggle className="hidden sm:inline-flex" />
+            <a
+              href={personalData.resume}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:inline-flex btn btn-primary !min-h-9 !px-3.5 !py-1.5 text-[0.8rem]"
+            >
+              Résumé <HiArrowUpRight size={13} aria-hidden="true" />
+            </a>
+            <button
+              type="button"
+              className="lg:hidden neu-button grid h-9 w-9 place-items-center rounded-xl"
+              onClick={() => setMobileOpen((o) => !o)}
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-menu"
+            >
+              {mobileOpen ? <HiX size={18} /> : <HiMenuAlt3 size={18} />}
+            </button>
+          </div>
+        </nav>
+      </header>
 
-      {/* ── MOBILE DRAWER ── */}
+      {/* Mobile drawer */}
       <div
-        className={`md:hidden fixed inset-0 z-40 transition-all duration-300 ${
-          mobileOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+        className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
+          mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
+        aria-hidden={!mobileOpen}
       >
-        {/* Backdrop */}
         <div
-          className="absolute inset-0 bg-[#060818]/80 backdrop-blur-sm"
+          className="absolute inset-0 bg-canvas/60 backdrop-blur-sm"
           onClick={() => setMobileOpen(false)}
         />
-
-        {/* Drawer panel */}
         <div
-          className={`absolute top-16 left-0 right-0
-            bg-[#060818]/95 backdrop-blur-xl
-            border-b border-indigo-500/15
-            transition-all duration-300 ease-out
-            ${mobileOpen ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"}`}
+          id="mobile-menu"
+          className={`glass-strong absolute top-20 left-3 right-3 rounded-2xl p-3 transition-transform duration-300 ease-out ${
+            mobileOpen ? "translate-y-0" : "-translate-y-3"
+          }`}
         >
-          {/* Top hairline */}
-          <div className="h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
-
-          <ul className="flex flex-col px-6 py-4 gap-1">
-            {navItems.map(({ label, href }, i) => {
-              const id = href.startsWith("#") ? href.slice(1) : null;
-              const isActive = id && active === id && isHome;
+          <div className="flex items-center justify-between px-3 pt-1 pb-3">
+            <span className="eyebrow">Theme</span>
+            <ThemeToggle />
+          </div>
+          <ul className="flex flex-col gap-0.5 border-t border-line pt-2">
+            {navItems.map(({ label, href }) => {
+              const isActive = isHome && active === href.slice(1);
               return (
-                <li
-                  key={label}
-                  style={{
-                    transitionDelay: mobileOpen ? `${i * 40}ms` : "0ms",
-                  }}
-                  className={`transition-all duration-300 ${
-                    mobileOpen
-                      ? "opacity-100 translate-x-0"
-                      : "opacity-0 -translate-x-3"
-                  }`}
-                >
+                <li key={href}>
                   <a
-                    href={href}
+                    href={isHome ? href : `/${href}`}
                     onClick={(e) => handleNavClick(e, href)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl
-                      text-[0.75rem] font-semibold tracking-widest uppercase
-                      transition-all duration-200 cursor-pointer
-                      ${
-                        isActive
-                          ? "text-indigo-400 bg-indigo-500/10 border border-indigo-500/20"
-                          : "text-white/50 hover:text-white hover:bg-indigo-500/8"
-                      }`}
+                    tabIndex={mobileOpen ? 0 : -1}
+                    aria-current={isActive ? "true" : undefined}
+                    className={`flex items-center justify-between rounded-xl px-3 py-3 text-[0.95rem] font-medium ${
+                      isActive ? "bg-accent/12 text-accent-text" : "text-fg-muted hover:bg-fg/5 hover:text-fg"
+                    }`}
                   >
-                    {isActive && (
-                      <span className="w-1 h-1 rounded-full bg-indigo-400 shadow-[0_0_6px_#818cf8]" />
-                    )}
                     {label}
+                    {isActive && <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />}
                   </a>
                 </li>
               );
             })}
           </ul>
-
-          {/* CTA row */}
-          <div className="px-6 pb-5 pt-2 border-t border-white/5">
+          <div className="grid grid-cols-2 gap-2 border-t border-line mt-2 pt-3">
+            <a
+              href={personalData.resume}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={mobileOpen ? 0 : -1}
+              className="btn btn-secondary"
+            >
+              Résumé
+            </a>
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, "#contact")}
-              className="flex items-center justify-center w-full py-2.5 rounded-xl
-                bg-indigo-600 hover:bg-indigo-500 text-white
-                text-[0.7rem] font-bold tracking-widest uppercase
-                transition-all duration-200"
+              tabIndex={mobileOpen ? 0 : -1}
+              className="btn btn-primary"
             >
               Get in touch
             </a>

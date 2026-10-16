@@ -37,22 +37,24 @@ const LANG_COLORS = {
   Move: "#4a90d9",
   PLpgSQL: "#336791",
 };
-const getLangColor = (lang) => LANG_COLORS[lang] ?? "#818cf8";
+const getLangColor = (lang) => LANG_COLORS[lang] ?? "var(--accent)";
 
 /* ── Contribution level → color ── */
 function getContribColor(count) {
-  if (count === 0) return "rgba(99,102,241,0.06)";
-  if (count <= 3) return "rgba(99,102,241,0.25)";
-  if (count <= 6) return "rgba(99,102,241,0.5)";
-  if (count <= 9) return "rgba(99,102,241,0.75)";
-  return "#818cf8";
+  // Mixed from theme tokens so the scale works in light and dark.
+  const mix = (pct) => `color-mix(in oklab, var(--accent) ${pct}%, var(--surface-2))`;
+  if (count === 0) return "var(--surface-2)";
+  if (count <= 3) return mix(30);
+  if (count <= 6) return mix(55);
+  if (count <= 9) return mix(80);
+  return "var(--accent)";
 }
 
 /* ── Skeleton ── */
 function Skeleton({ w = "100%", h = "1.5rem", className = "" }) {
   return (
     <span
-      className={`block rounded-lg bg-indigo-500/8 animate-pulse ${className}`}
+      className={`block rounded-lg bg-surface-2 animate-pulse ${className}`}
       style={{ width: w, height: h }}
     />
   );
@@ -81,7 +83,7 @@ function ContributionGraph({ data, total }) {
   });
 
   return (
-    <div className="w-full overflow-x-auto scrollbar-none flex justify-center">
+    <div className="w-full overflow-x-auto">
       <div className="min-w-[600px]">
         {/* Month labels */}
         <div className="flex mb-1.5 pl-7" style={{ gap: "3px" }}>
@@ -90,7 +92,7 @@ function ContributionGraph({ data, total }) {
             return (
               <div key={wi} className="flex-shrink-0" style={{ width: 11 }}>
                 {m && (
-                  <span className="text-[0.55rem] text-white/30 font-medium whitespace-nowrap">
+                  <span className="text-[0.55rem] text-fg-subtle font-medium whitespace-nowrap">
                     {m.label}
                   </span>
                 )}
@@ -109,7 +111,7 @@ function ContributionGraph({ data, total }) {
               <div
                 key={i}
                 style={{ height: 11 }}
-                className="text-[0.5rem] text-white/25 font-medium text-right leading-none flex items-center justify-end"
+                className="text-[0.5rem] text-fg-subtle font-medium text-right leading-none flex items-center justify-end"
               >
                 {d}
               </div>
@@ -144,7 +146,7 @@ function ContributionGraph({ data, total }) {
 
         {/* Legend */}
         <div className="flex items-center justify-end gap-1.5 mt-2">
-          <span className="text-[0.55rem] text-white/25">Less</span>
+          <span className="text-[0.55rem] text-fg-subtle">Less</span>
           {[0, 2, 5, 8, 12].map((count) => (
             <div
               key={count}
@@ -157,7 +159,7 @@ function ContributionGraph({ data, total }) {
               }}
             />
           ))}
-          <span className="text-[0.55rem] text-white/25">More</span>
+          <span className="text-[0.55rem] text-fg-subtle">More</span>
         </div>
       </div>
     </div>
@@ -201,10 +203,10 @@ function LangBar({ languages }) {
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ background: getLangColor(lang) }}
             />
-            <span className="text-[0.7rem] text-white/60 font-semibold">
+            <span className="text-[0.7rem] text-fg-muted font-semibold">
               {lang}
             </span>
-            <span className="text-[0.65rem] text-white/25">
+            <span className="text-[0.65rem] text-fg-subtle">
               {((bytes / total) * 100).toFixed(1)}%
             </span>
           </div>
@@ -235,93 +237,39 @@ export default function GitHubStats() {
   if (error) return null;
 
   return (
-    <div
-      id="github-stats"
-      className="relative border-t border-indigo-500/10 my-12 lg:my-24"
-    >
-      <SectionHeading
-        eyebrow="Activity"
-        title="GitHub Stats"
-        className="my-8 lg:py-10"
-      />
+    <section id="github-stats" aria-labelledby="github-heading" className="relative scroll-mt-24 py-12 lg:py-20">
+      <SectionHeading eyebrow="Activity" title={<span id="github-heading">GitHub</span>} className="mb-10" />
 
-      <div className="flex flex-col gap-4">
-        {/* Contribution graph */}
-        <SectionWrapper>
-          <div
-            className="relative p-5 lg:p-7 rounded-2xl
-            bg-white/[0.025] border border-indigo-500/15 backdrop-blur-sm
-            hover:border-indigo-500/25 transition-all duration-300"
-          >
-            <div
-              className="absolute top-0 left-0 right-0 h-px
-              bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent"
-            />
-
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                <IoGitCommit size={13} className="text-indigo-400/60" />
-                <p className="text-[0.65rem] font-bold tracking-widest uppercase text-white/35">
-                  Contribution Graph
-                </p>
-              </div>
-              {data?.contributions?.totalContributions ? (
-                <p className="text-[0.65rem] text-white/30 font-medium">
-                  {data.contributions.totalContributions.toLocaleString()}{" "}
-                  contributions in the last year
-                </p>
-              ) : (
-                <Skeleton w="200px" h="14px" />
-              )}
-            </div>
-
-            <ContributionGraph
-              data={data?.contributions}
-              total={data?.contributions?.totalContributions}
-            />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.6fr_1fr]">
+        <SectionWrapper className="surface-card min-w-0 p-5 lg:p-6">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
+            <h3 className="eyebrow flex items-center gap-2">
+              <IoGitCommit size={14} aria-hidden="true" /> Contributions
+            </h3>
+            {data?.contributions?.totalContributions ? (
+              <p className="text-xs text-fg-muted">
+                {data.contributions.totalContributions.toLocaleString()} in the last year
+              </p>
+            ) : (
+              <Skeleton w="160px" h="14px" />
+            )}
           </div>
+          <ContributionGraph data={data?.contributions} />
         </SectionWrapper>
 
-        {/* Top Languages */}
-        <SectionWrapper delay={0.1}>
-          <div
-            className="relative p-5 lg:p-7 rounded-2xl
-            bg-white/[0.025] border border-indigo-500/15 backdrop-blur-sm
-            hover:border-indigo-500/25 transition-all duration-300"
-          >
-            <div
-              className="absolute top-0 left-0 right-0 h-px
-              bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent"
-            />
-
-            <div className="flex items-center gap-2 mb-5">
-              <MdOutlineCode size={13} className="text-indigo-400/60" />
-              <p className="text-[0.65rem] font-bold tracking-widest uppercase text-white/35">
-                Top Languages
-              </p>
-            </div>
-
-            <LangBar languages={data?.languages} />
-          </div>
+        <SectionWrapper className="surface-card p-5 lg:p-6">
+          <h3 className="eyebrow mb-5 flex items-center gap-2">
+            <MdOutlineCode size={14} aria-hidden="true" /> Top languages
+          </h3>
+          <LangBar languages={data?.languages} />
         </SectionWrapper>
       </div>
 
-      {/* CTA */}
-      <SectionWrapper className="flex justify-center mt-6" delay={0.15}>
-        <Link
-          href={personalData.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
-            bg-white/3 border border-indigo-500/20 text-white/50
-            text-[0.65rem] font-bold tracking-widest uppercase
-            hover:bg-indigo-500/8 hover:border-indigo-500/35 hover:text-white
-            transition-all duration-200"
-        >
-          <BsGithub size={13} />
-          View GitHub Profile →
+      <div className="mt-8 flex justify-center">
+        <Link href={personalData.github} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
+          <BsGithub size={15} aria-hidden="true" /> View GitHub profile
         </Link>
-      </SectionWrapper>
-    </div>
+      </div>
+    </section>
   );
 }

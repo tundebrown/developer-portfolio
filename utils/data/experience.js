@@ -1,32 +1,111 @@
+// Source of truth: the role-targeted CVs. Keep dates, titles and companies in sync with them.
 export const experiences = [
   {
     id: 1,
-    title: 'Full-Stack Engineer',
-    company: "Surf Lending Protocol (DeFi)",
-    duration: "(February 2025 – Present)"
+    slug: "surf",
+    title: "Full-Stack Engineer",
+    company: "Surf Lending Protocol",
+    location: "Remote",
+    start: "February 2025",
+    end: "Present",
+    links: [
+      { label: "surflending.org", href: "https://surflending.org" },
+      { label: "v2.surflending.org", href: "https://v2.surflending.org" },
+    ],
+    highlights: [
+      "Own the frontend and data services of Surf, a capital-efficient pooled DeFi lending protocol on Cardano. Shipped v1 and led the v2 rebuild.",
+      "Built supply, borrow, withdraw, leveraged long and loan management flows on a unified design system, using deferred rendering to keep modals fast with live on-chain data.",
+      "Built data services that consume on-chain feeds for APY, TVL, borrow rates and position health, served to the UI over REST and WebSocket.",
+      "Integrated in-app token swaps through the DexHunter API and delivered i18n across 25+ components in 11 languages with per-language SEO.",
+    ],
+    tracks: ["web3", "frontend", "fullstack"],
   },
   {
     id: 2,
-    title: "Front-End Engineer",
-    company: "Bodega Market ",
-    duration: "(March 2024 – Present)"
+    slug: "bodega",
+    title: "Full-Stack Engineer",
+    company: "Bodega Market",
+    location: "Remote",
+    start: "March 2024",
+    end: "Present",
+    links: [
+      { label: "v3.bodegamarket.io", href: "https://v3.bodegamarket.io" },
+      { label: "v2.bodegamarket.io", href: "https://v2.bodegamarket.io" },
+    ],
+    highlights: [
+      "Build frontend and integration features for Bodega, a decentralised prediction market on Cardano.",
+      "Delivered major work on the v3 upgrade, which introduced LMSR-powered live odds with dynamically updating prices.",
+      "Handled transaction submission, confirmation polling and error states, and integrated wallet adapters that let users join with Google or X accounts.",
+      "Kept the component architecture stable through several rapid protocol upgrades with minimal regressions.",
+    ],
+    tracks: ["web3", "frontend", "fullstack"],
   },
   {
     id: 3,
-    title: "Full-Stack Developer ",
-    company: "Metajest Gaming Studios LLC",
-    duration: "(April 2022 – September 2025)"
+    slug: "cardano-defi",
+    title: "Contract Frontend Engineer",
+    company: "Cardano DeFi Protocols",
+    location: "Remote",
+    start: "2023",
+    end: "2026",
+    links: [
+      { label: "pulsefinance.org", href: "https://pulsefinance.org" },
+      { label: "app.strikefinance.org", href: "https://app.strikefinance.org" },
+    ],
+    highlights: [
+      "Pulse Finance (2025 – 2026): implemented the frontend of a privacy-focused DEX from the UI designs, including multi-wallet connection and the token swap flow, with data fetching, caching and transaction state in custom React hooks and TanStack Query.",
+      "Strike Finance (2023): implemented the frontend of an on-chain perpetuals exchange, covering wallet connection, live on-chain data, token swaps and a full trading chart with TradingView Lightweight Charts.",
+    ],
+    tracks: ["web3", "frontend"],
   },
   {
     id: 4,
-    title: "Backend Developer",
-    company: "Birch Communications Limited",
-    duration: "(January 2020 – March 2021)"
+    slug: "freelance",
+    title: "Freelance Full-Stack Developer",
+    company: "Upwork & Freelance",
+    location: "Remote",
+    start: "2017",
+    end: "Present",
+    links: [],
+    highlights: [
+      "Top Rated on Upwork with a 100% Job Success Score, delivering for international clients across e-commerce, CMS, DeFi and AI products.",
+      "Designed, built, deployed and maintained BuyMedia.ng, Abuja Market (web and React Native app) and Jhennie Stores end to end (2025 – 2026).",
+      "Run these platforms on dedicated Linux servers on AWS and Google Cloud, with Dockerised services, CI/CD pipelines, Nginx reverse proxying and SSL.",
+      "Built an AI platform on Google's LLM for text generation, summarisation and sentiment analysis, with rate limiting and response caching.",
+    ],
+    tracks: ["fullstack", "backend", "devops", "mobile"],
   },
   {
     id: 5,
-    title: "Freelance Developer",
-    company: "Upwork",
-    duration: "(2017 – Present)"
-  }
-]
+    slug: "metajest",
+    title: "Full-Stack Developer",
+    company: "Metajest Gaming Studios LLC",
+    location: "UAE, Remote",
+    start: "April 2022",
+    end: "January 2024",
+    links: [],
+    highlights: [
+      "Designed and deployed RESTful APIs with Nest.js and Node.js across gaming, vesting and internal tools.",
+      "Led development of an investor token vesting dApp on Polygon: MetaMask-connected dashboard plus the backend for unlock computation, claim validation and transaction state.",
+      "Built a secure coin redemption system with payment gateway integration, real-time transaction tracking and audit logging.",
+      "Built an Application Tracking System with Swagger-documented APIs, reducing internal task completion time by about 25%.",
+    ],
+    tracks: ["fullstack", "backend", "web3", "frontend"],
+  },
+  {
+    id: 6,
+    slug: "birch",
+    title: "Backend Developer",
+    company: "Birch Communications",
+    location: "USA, Remote",
+    start: "January 2020",
+    end: "March 2021",
+    links: [],
+    highlights: [
+      "Built scalable Laravel backends for e-commerce and e-learning platforms supporting 10,000+ active users.",
+      "Implemented role-based access control for educators, students and administrators, plus automated mailing and notification pipelines.",
+      "Optimised database queries and server-side logic, cutting page load times by about 20% during peak traffic.",
+    ],
+    tracks: ["backend"],
+  },
+];
