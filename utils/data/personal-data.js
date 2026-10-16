@@ -19,6 +19,6 @@ export const personalData = {
   facebook: 'https://web.facebook.com/tunde.olupitan.9',
   linkedIn: 'https://www.linkedin.com/in/tunde-olupitan-3630221b5/',
   devUsername: "tunde_brown_9aca573715fe5",
-  resume: "https://drive.google.com/file/d/1FrPppv8Qo7W6sl4QvuzAggbZFmG7NZPH/view?usp=drive_link",
+  resume: "https://drive.google.com/file/d/1NctFZYbpTcHtdCzBbGDO0YVds1dF4K_z/view?usp=sharing",
   upwork: "https://www.upwork.com/freelancers/~0113e50d9553465adb",
 }
